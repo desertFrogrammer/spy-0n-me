@@ -1,4 +1,4 @@
-const url = './data.ndjson';
+const url = './result_parsed.ndjson';
 const container = document.getElementById('data');
 
 async function loadData() {
