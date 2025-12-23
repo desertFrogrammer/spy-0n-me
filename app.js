@@ -1,47 +1,53 @@
-const url = './result_parsed.ndjson';
+const SUPABASE_URL = 'https://daxmtbkhwphopmuxzyow.supabase.co'
+const SUPABASE_ANON_KEY = 'sb_publishable_3Ty9dgqnqaiCWV4Fm3NKzg_KtwJYva3'
+
 const container = document.getElementById('data');
 
 async function loadData() {
     try {
-        const res = await fetch(url + '?t=' + Date.now(), { cache: 'no-store' });
-        const text = await res.text();
+        const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/messages?select=text,created_at&order=created_at.asc`,
+            {
+                headers: {
+                    apikey: SUPABASE_ANON_KEY,
+                    Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+                },
+                cache: 'no-store'
+            }
+        )
 
-        container.innerHTML = '';
+        const rows = await res.json()
+        container.innerHTML = ''
 
-        const lines = text.trim().split('\n');
-
-        for (const line of lines) {
-            if (!line) continue;
-
-            let obj;
+        for (const row of rows) {
+            let obj
             try {
-                obj = JSON.parse(line);
+                obj = JSON.parse(row.text)
             } catch {
-                continue;
+                continue
             }
 
-            // универсальная проверка
-            const values = Object.entries(obj).filter(([k]) => k !== 'source');
-            let valid = true;
+            const values = Object.entries(obj).filter(([k]) => k !== 'source')
+            let valid = true
 
             for (const [, v] of values) {
                 if (typeof v !== 'number' || Number.isNaN(v)) {
-                    valid = false;
-                    break;
+                    valid = false
+                    break
                 }
             }
 
-            if (!valid) continue;
+            if (!valid) continue
 
-            const div = document.createElement('div');
-            div.className = 'row';
+            const div = document.createElement('div')
+            div.className = 'row'
             div.textContent =
-                `source=${obj.source} | lvl=${obj.lvl} | exp=${obj.exp}`;
+                `source=${obj.source} | lvl=${obj.lvl} | exp=${obj.exp}`
 
-            container.appendChild(div);
+            container.appendChild(div)
         }
     } catch (err) {
-        console.error(err);
+        console.error(err)
     }
 }
 
