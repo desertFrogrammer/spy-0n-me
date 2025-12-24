@@ -7,7 +7,7 @@ const container = document.getElementById('data');
 async function loadData() {
     try {
         const res = await fetch(
-            `${SUPABASE_URL}/rest/v1/messages?select=text,created_at&order=created_at.asc`,
+            `${SUPABASE_URL}/rest/v1/char-data?select=text,created_at&order=created_at.asc`,
             {
                 headers: {
                     apikey: SUPABASE_ANON_KEY,
