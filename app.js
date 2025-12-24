@@ -17,7 +17,9 @@ async function loadData() {
             }
         )
 
+        
         const rows = await res.json()
+console.log('Supabase response:', rows)
         container.innerHTML = ''
 
         for (const row of rows) {
